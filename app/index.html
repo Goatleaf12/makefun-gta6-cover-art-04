@@ -3,21 +3,94 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
+<title>Sunset State Cover Studio</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
+<header class="topbar">
+  <div class="brand">SUNSET STATE <span>COVER STUDIO</span></div>
+  <ol class="steps">
+    <li><b>1</b> Add photos</li>
+    <li><b>2</b> Pick a size</li>
+    <li><b>3</b> Export PNG</li>
+  </ol>
+  <div class="export-bar">
+    <button type="button" data-export="landscape">PNG 1920×1080</button>
+    <button type="button" data-export="portrait">PNG 1080×1350</button>
+    <button type="button" data-export="square">PNG 1080×1080</button>
+    <button type="button" class="export-all" data-export="all">EXPORT ALL 3 SIZES</button>
+  </div>
+</header>
+
+<main class="cols">
+  <aside class="col photos-col">
+    <div class="col-head"><h2>PHOTOS</h2><span id="photoCount"></span></div>
+    <div id="thumbs" class="thumbs"></div>
+    <label class="add-btn">+ Add your photos
+      <input id="fileInput" type="file" accept="image/*" multiple hidden>
+    </label>
+    <p class="hint">Drag a photo onto a panel to replace it. On the cover:
+      click a panel to select it, drag to pan, scroll to zoom,
+      double-click to re-centre. Photos never leave your machine.</p>
+    <section class="panel-box">
+      <h3 id="panelTitle">Panel 1</h3>
+      <label>Location tag <input id="tagInput" type="text" maxlength="34"></label>
+      <label>Tag sub-line <input id="subInput" type="text" maxlength="40"></label>
+      <label>Zoom <input id="zoomRange" type="range" min="40" max="400" value="100"></label>
+      <div class="btn-row">
+        <button type="button" id="recentreBtn">Re-centre</button>
+        <button type="button" id="fillAllBtn">Fill all panels</button>
+        <button type="button" id="spreadBtn">Spread photos</button>
+      </div>
+      <p class="hint">“Fill all panels” uses the selected photo everywhere;
+        “Spread photos” deals the pool across the panels.</p>
+    </section>
+  </aside>
+
+  <section class="col stage-col">
+    <div class="size-tabs" role="tablist">
+      <button type="button" data-size="landscape">1920 × 1080</button>
+      <button type="button" data-size="portrait">1080 × 1350</button>
+      <button type="button" data-size="square">1080 × 1080</button>
+    </div>
+    <canvas id="stage" width="1920" height="1080" aria-label="Cover preview"></canvas>
+    <p id="status" role="status">Loading the studio…</p>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+
+  <aside class="col controls-col">
+    <h2>LAYOUT</h2>
+    <div id="layouts" class="layout-grid"></div>
+    <h2>GRADE</h2>
+    <div id="grades" class="chip-col"></div>
+    <h2>COVER RECIPES</h2>
+    <div id="recipes" class="chip-col"></div>
+    <h2>EFFECTS</h2>
+    <div class="sliders">
+      <label>Grade strength <input type="range" min="0" max="100" data-fx="strength"></label>
+      <label>Contrast <input type="range" min="0" max="100" data-fx="contrast"></label>
+      <label>Saturation <input type="range" min="0" max="100" data-fx="saturation"></label>
+      <label>Film grain <input type="range" min="0" max="100" data-fx="grain"></label>
+      <label>Vignette <input type="range" min="0" max="100" data-fx="vignette"></label>
+      <label class="check"><input type="checkbox" id="fxHalftone"> Halftone print dots</label>
+      <label class="check"><input type="checkbox" id="fxPaper"> Paper finish</label>
+      <label class="check"><input type="checkbox" id="showTags" checked> Panel location tags</label>
+    </div>
+    <h2>CAPTION</h2>
+    <div class="captions">
+      <label>Title <input type="text" data-cap="title" maxlength="26"></label>
+      <label>Script subtitle <input type="text" data-cap="subtitle" maxlength="34"></label>
+      <label>Quote line <input type="text" data-cap="quote" maxlength="44"></label>
+      <label>Stars (0–5) <input type="number" data-cap="stars" min="0" max="5" step="1"></label>
+      <label>Seal text <input type="text" data-cap="seal" maxlength="30"></label>
+      <label>Volume tag <input type="text" data-cap="volume" maxlength="12"></label>
+      <label>Wanted word <input type="text" data-cap="wanted" maxlength="20"></label>
+      <label>Ribbon <input type="text" data-cap="ribbon" maxlength="24"></label>
+      <label>Band tagline <input type="text" data-cap="tagline" maxlength="52"></label>
+      <label>Catalog line <input type="text" data-cap="catalog" maxlength="60"></label>
+    </div>
+  </aside>
 </main>
+
 <script type="module" src="./src/main.js"></script>
 </body>
 </html>

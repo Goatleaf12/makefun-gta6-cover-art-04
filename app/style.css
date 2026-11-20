@@ -1,12 +1,128 @@
-html, body { margin: 0; height: 100%; background: #f2f0f4; color: #1d1b22; font: 15px/1.4 system-ui, sans-serif; }
-.app { display: flex; gap: 32px; align-items: center; justify-content: center; height: 100%; padding: 24px; box-sizing: border-box; }
-.controls { display: flex; flex-direction: column; gap: 14px; width: 280px; }
-.controls h1 { margin: 0; font-size: 28px; }
-.controls p { margin: 0; color: #5c5866; }
-label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
-input[type=text] { font: inherit; padding: 8px; border: 1px solid #c9c4d1; border-radius: 6px; }
-button { font: inherit; font-weight: 700; padding: 10px; border: 0; border-radius: 6px; background: #1d1b22; color: #fff; cursor: pointer; }
-canvas { width: min(70vh, 60vw); height: min(70vh, 60vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); }
-body.shot-cover .controls { display: none; }
-body.shot-cover .app { padding: 0; }
-body.shot-cover canvas { width: 100vw; height: 100vh; box-shadow: none; }
+/* Sunset State Cover Studio — dark purple editor chrome, pink-orange
+   accents, three columns: photos / live preview / controls. */
+
+@font-face {
+  font-family: "Anton";
+  src: url("./fonts/Anton-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Pacifico";
+  src: url("./fonts/Pacifico-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Oswald";
+  src: url("./fonts/Oswald.ttf") format("truetype");
+  font-weight: 200 700;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: #12081c;
+  color: #f2e9f5;
+  font: 14px/1.45 "Oswald", system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.topbar {
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, #1d0b2e, #2a1030 55%, #1d0b2e);
+  border-bottom: 2px solid #ff5fa2;
+}
+.brand {
+  font-family: "Anton", sans-serif; font-size: 26px; letter-spacing: 0.04em;
+  background: linear-gradient(180deg, #fff3c4, #ff7847);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  white-space: nowrap;
+}
+.brand span { color: #ff5fa2; -webkit-text-fill-color: #ff5fa2; font-size: 15px; vertical-align: 4px; }
+.steps { display: flex; gap: 18px; list-style: none; margin: 0; padding: 0; color: #d9c8e8; font-size: 13.5px; }
+.steps b {
+  display: inline-grid; place-items: center; width: 19px; height: 19px; margin-right: 5px;
+  border-radius: 50%; background: #ff7847; color: #1d0b2e; font-size: 12px;
+}
+.export-bar { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+button {
+  font: inherit; font-weight: 600; letter-spacing: 0.04em;
+  background: #2c1544; color: #f2e9f5; border: 1px solid #55306e;
+  border-radius: 7px; padding: 7px 12px; cursor: pointer;
+}
+button:hover { border-color: #ff5fa2; }
+button.active { background: #ff5fa2; border-color: #ff5fa2; color: #20081a; }
+.export-all { background: linear-gradient(90deg, #ff7847, #ff5fa2); border: 0; color: #20081a; }
+
+.cols {
+  display: grid; grid-template-columns: 288px minmax(0, 1fr) 308px;
+  gap: 16px; padding: 16px 20px 22px; align-items: start;
+}
+.col h2 {
+  font-size: 13px; letter-spacing: 0.22em; color: #ffb37a; margin: 14px 0 8px;
+}
+.col h2:first-child { margin-top: 0; }
+.col-head { display: flex; justify-content: space-between; align-items: baseline; }
+.col-head span { color: #9d86b8; font-size: 12.5px; }
+
+.thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.thumb {
+  border: 2px solid #3a2054; border-radius: 8px; overflow: hidden; cursor: pointer;
+  background: #1d1030;
+}
+.thumb.active { border-color: #ff5fa2; }
+.thumb img { display: block; width: 100%; height: 64px; object-fit: cover; }
+.thumb span { display: block; padding: 3px 6px; font-size: 11.5px; color: #d9c8e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.add-btn {
+  display: block; margin-top: 10px; text-align: center; padding: 9px;
+  border: 1.5px dashed #ff7847; border-radius: 8px; color: #ffb37a;
+  font-weight: 600; cursor: pointer;
+}
+.add-btn:hover { background: rgba(255, 120, 71, 0.12); }
+.hint { color: #9d86b8; font-size: 12.5px; line-height: 1.5; }
+
+.panel-box { background: #1d1030; border: 1px solid #3a2054; border-radius: 10px; padding: 12px; margin-top: 14px; }
+.panel-box h3 { margin: 0 0 8px; font-size: 14px; color: #ffd9a0; letter-spacing: 0.08em; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: #cdbce0; margin-bottom: 9px; }
+input[type="text"], input[type="number"] {
+  font: inherit; color: #fff; background: #12081c; border: 1px solid #55306e;
+  border-radius: 6px; padding: 6px 8px; width: 100%;
+}
+input[type="range"] { width: 100%; accent-color: #ff5fa2; }
+.btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-row button { flex: 1; padding: 6px 4px; font-size: 12.5px; }
+
+.stage-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.size-tabs { display: flex; gap: 8px; }
+#stage {
+  width: 100%; max-width: 1020px; height: auto; display: block;
+  border-radius: 6px; box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55);
+  background: #000; cursor: grab; touch-action: none;
+}
+#stage:active { cursor: grabbing; }
+#status { color: #ffd9a0; font-size: 13.5px; letter-spacing: 0.06em; margin: 0; text-align: center; min-height: 20px; }
+
+.layout-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.layout-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 3px; font-size: 11px; }
+.layout-btn canvas { width: 100%; height: auto; border-radius: 3px; }
+.chip-col { display: flex; flex-direction: column; gap: 6px; }
+.grade-btn, .recipe-btn { display: flex; align-items: center; gap: 9px; text-align: left; padding: 7px 10px; }
+.grade-dot { width: 16px; height: 16px; border-radius: 50%; flex: none; border: 1px solid rgba(255,255,255,0.35); }
+.sliders label, .captions label { margin-bottom: 7px; }
+label.check { flex-direction: row; align-items: center; gap: 8px; font-size: 13px; color: #e8dcf5; }
+label.check input { accent-color: #ff5fa2; width: 16px; height: 16px; }
+
+/* Screenshot scenes: the cover (or editor) exactly as arranged. */
+body.shot { background: #000; }
+body.shot-cover .topbar, body.shot-cover .photos-col, body.shot-cover .controls-col,
+body.shot-cover .size-tabs, body.shot-cover #status { display: none; }
+body.shot-cover .cols { display: block; padding: 0; }
+body.shot-cover .stage-col { display: block; }
+body.shot-cover #stage { max-width: none; border-radius: 0; box-shadow: none; cursor: default; }
+body.shot-editor .cols { grid-template-columns: 228px minmax(0, 1fr) 252px; gap: 10px; padding: 10px 12px; }
+body.shot-editor #stage { max-width: 690px; }
+body.shot-editor .topbar { padding: 8px 14px; gap: 16px; }
+body.shot-editor .thumb img { height: 44px; }
+body.shot-editor .col h2 { margin: 8px 0 5px; }
+body.shot-editor .hint { display: none; }
+body.shot-editor .panel-box { margin-top: 8px; padding: 8px; }
